@@ -183,11 +183,13 @@ const nextActions: NextAction[] = [
 ];
 
 function slugify(value: string): string {
-  return value
+  const slug = value
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .replace(/-{2,}/g, '-');
+
+  return slug || 'unnamed-build';
 }
 
 function summarizeSpec(rawSpec: string): string {

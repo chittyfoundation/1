@@ -39,6 +39,29 @@ describe('createBuildPacket', () => {
     );
     expect(packet.scorecard.meets_threshold).toBe(false);
   });
+
+  it('normalizes titles into safe slugs and truncates long normalized specs', () => {
+    const packet = createBuildPacket({
+      ...request,
+      title: '  *** Chitty__Prime!!! Builder ###  ',
+      raw_spec: `  ${'builder    '.repeat(30)}  `,
+    });
+
+    expect(packet.identity.name).toBe('chitty-prime-builder');
+    expect(packet.identity.description).not.toContain('  ');
+    expect(packet.identity.description).toHaveLength(180);
+    expect(packet.identity.description.endsWith('...')).toBe(true);
+  });
+
+  it('falls back to a safe slug when a title has no alphanumeric characters', () => {
+    const packet = createBuildPacket({
+      ...request,
+      title: '!!!@@@###',
+    });
+
+    expect(packet.identity.name).toBe('unnamed-build');
+    expect(packet.packet_id).toBe('packet_unnamed-build');
+  });
 });
 
 describe('createBuildEnvelope', () => {

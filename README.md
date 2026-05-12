@@ -66,7 +66,7 @@ Example request:
 
 ## Schemas
 
-The initial builder contracts live in `/home/runner/work/1/1/identity/schemas`:
+The initial builder contracts live in `identity/schemas`:
 
 - `builder.fractal.schema.json`
 - `build-packet.schema.json`
