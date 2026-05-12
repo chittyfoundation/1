@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schema.chitty.cc/chittyprime/build-packet.schema.json",
+  "title": "Build Packet",
+  "description": "Output of ChittyPrime's drop-spec decomposition. Fields with no verified upstream data are emitted as null — the build packet does not fabricate canon terms, agents, workflows, queues, rubrics, or scorecards.",
+  "type": "object",
+  "required": [
+    "packet_id",
+    "builder_scope_id",
+    "source_spec_artifact_id",
+    "identity",
+    "authority",
+    "connectivity",
+    "execution",
+    "evidence",
+    "evaluation",
+    "evolution",
+    "generated_artifacts",
+    "blockers",
+    "scorecard"
+  ],
+  "properties": {
+    "packet_id": { "type": "string" },
+    "builder_scope_id": { "type": "string" },
+    "source_spec_artifact_id": { "type": "string" },
+    "identity": {
+      "type": "object",
+      "required": ["name", "description", "artifact_type", "canonical_uri", "domain", "tier", "owner", "visibility"],
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "artifact_type": {
+          "enum": ["service", "workflow", "schema", "agent", "pipeline", "doc_model", "policy"]
+        },
+        "canonical_uri": { "type": ["string", "null"] },
+        "domain": { "type": ["string", "null"] },
+        "tier": { "type": ["number", "null"] },
+        "owner": { "type": "string" },
+        "visibility": { "type": "string" }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": ["schema_contracts", "approval_required", "legal_hold", "restricted_data", "canon_terms", "policy_refs", "certification_target"],
+      "properties": {
+        "schema_contracts": { "type": "array", "items": { "type": "string" } },
+        "approval_required": { "type": "boolean" },
+        "legal_hold": { "type": "boolean" },
+        "restricted_data": { "type": "boolean" },
+        "canon_terms": { "type": "null" },
+        "policy_refs": { "type": "null" },
+        "certification_target": { "type": "null" }
+      }
+    },
+    "connectivity": {
+      "type": "object",
+      "required": ["apis", "auth_required", "upstream_services", "downstream_services", "events", "queues", "buckets", "hyperdrive_bindings"],
+      "properties": {
+        "apis": { "type": "array", "items": { "type": "string" } },
+        "auth_required": { "type": "boolean" },
+        "upstream_services": { "type": "null" },
+        "downstream_services": { "type": "null" },
+        "events": { "type": "null" },
+        "queues": { "type": "null" },
+        "buckets": { "type": "null" },
+        "hyperdrive_bindings": { "type": "null" }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "required": ["runtime", "deployment_environments", "workflows", "agents", "miniloops", "queues", "schedules"],
+      "properties": {
+        "runtime": { "type": "string" },
+        "deployment_environments": { "type": "array", "items": { "type": "string" } },
+        "workflows": { "type": "null" },
+        "agents": { "type": "null" },
+        "miniloops": { "type": "null" },
+        "queues": { "type": "null" },
+        "schedules": { "type": "null" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["scope_artifacts", "audit_required", "scope_events", "ledger_candidate_policy", "retention_policy"],
+      "properties": {
+        "scope_artifacts": { "type": "array", "items": { "type": "string" } },
+        "audit_required": { "type": "boolean" },
+        "scope_events": { "type": "null" },
+        "ledger_candidate_policy": { "type": "null" },
+        "retention_policy": { "type": "null" }
+      }
+    },
+    "evaluation": {
+      "type": "object",
+      "required": ["tests", "acceptance_criteria", "rubrics", "replay_sets", "third_party_evaluator", "minimum_score"],
+      "properties": {
+        "tests": { "type": "array", "items": { "type": "string" } },
+        "acceptance_criteria": { "type": "null" },
+        "rubrics": { "type": "null" },
+        "replay_sets": { "type": "null" },
+        "third_party_evaluator": { "type": "null" },
+        "minimum_score": { "type": "null" }
+      }
+    },
+    "evolution": {
+      "type": "object",
+      "required": ["promotion_policy", "alchemist_enabled", "allowed_patch_types", "requires_replay", "requires_human_approval"],
+      "properties": {
+        "promotion_policy": { "type": "string" },
+        "alchemist_enabled": { "type": "null" },
+        "allowed_patch_types": { "type": "null" },
+        "requires_replay": { "type": "null" },
+        "requires_human_approval": { "type": "null" }
+      }
+    },
+    "generated_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "path", "status"],
+        "properties": {
+          "name": { "type": "string" },
+          "path": { "type": "string" },
+          "status": { "const": "planned" }
+        }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "layer", "description", "severity"],
+        "properties": {
+          "id": { "type": "string" },
+          "layer": { "enum": ["identity", "authority", "connectivity", "execution", "evidence", "evaluation", "evolution"] },
+          "description": { "type": "string" },
+          "severity": { "enum": ["medium", "high"] }
+        }
+      }
+    },
+    "scorecard": {
+      "type": "null",
+      "description": "Numeric scoring is not implemented in this build. Emitted as null until a real scoring producer exists."
+    }
+  },
+  "additionalProperties": false
+}

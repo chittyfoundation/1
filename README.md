@@ -1,78 +1,83 @@
-# chittyseed-fractal
+# ChittyPrime
 
-> The starter template for every new ChittyOS repo. Use it via **`gh repo create --template CHITTYFOUNDATION/chittyseed-fractal <new-repo-name>`** or the GitHub "Use this template" button.
+> **ChittyPrime: where intent becomes infrastructure.**
 
-This template encodes the **ChittyOS fractal trinity** layout — identity / authority / connectivity — that mirrors the data-layer scope primitive at the directory level. Every ChittyOS repo (foundation, core, app) is itself a registered scope.
+ChittyPrime is the first-builder fractal for ChittyOS. It turns rough intent—an idea, spec, workflow, schema, agent, or repo—into a governed build packet that can be validated, certified, registered, and executed.
 
-## What you get
+## What this repo currently implements
 
+- A concrete **builder.fractal** repo scaffold for ChittyPrime
+- JSON Schemas for the builder scope, build packet, and drop-spec request envelope
+- A **`POST /api/v1/builds`** endpoint that decomposes a raw spec into identity, authority, connectivity, execution, evidence, evaluation, and evolution layers
+- Initial generated-artifact planning, blocker reporting, and TY/VY/RY score output
+
+## Bootstrap builders
+
+| Builder | Responsibility |
+| --- | --- |
+| You / product authority | Naming, doctrine, and final approval |
+| ChittyCanon | Canon terms and canonical URI approval |
+| ChittySchema | Scope and build-packet contracts |
+| ChittyCertify | Certification gates for generated scaffolds |
+| ChittyRegister | Scope registration after compliance |
+| ChittyTrust / ChittyScore | TY / VY / RY scoring |
+| ChittyPrime bootstrap agent | Initial scaffold generation |
+
+## Build flow
+
+```text
+Raw intent
+→ ChittyPrime
+→ Build Packet
+→ Scaffold
+→ Validate
+→ Certify
+→ Execute
 ```
-identity/      # ChittyID layer       — what this service IS
-authority/     # ChittyTrust+Cert+Canon — weight (charters, canon, certs, owners)
-connectivity/  # ChittyConnect+Router  — interaction (api, integrations, migrations, releases, deployments, consumers, upstreams)
-scopes/        # nested fractal sub-services (recursive)
-scope.json     # the repo IS a scope — manifest at root
+
+## API
+
+### `POST /api/v1/builds`
+
+Creates a builder scope from a raw specification and returns a decomposed build packet plus blockers and next actions.
+
+Example request:
+
+```json
+{
+  "input_type": "spec",
+  "target_artifact_type": "service",
+  "title": "ChittyPrime Builder Fractal",
+  "raw_spec": "Turn rough intent into governed build packets.",
+  "constraints": {
+    "no_new_database": true,
+    "use_existing_scope_model": true
+  },
+  "desired_outputs": [
+    "CHARTER.md",
+    "CHITTY.md",
+    "AGENTS.md",
+    "scope.json",
+    "build-packet.schema.json"
+  ],
+  "execution_mode": "scaffold_only"
+}
 ```
 
-Plus:
+## Schemas
 
-- `CHARTER.md`, `CHITTY.md`, `CLAUDE.md` at repo root (auto-loaded by Claude Code)
-- `package.json` with standard ChittyOS scripts (build, test, lint, certify, validate:fractal)
-- `tsconfig.json` with `rootDir: identity/src` + `outDir: identity/dist`
-- `wrangler.jsonc` with `main: connectivity/api/index.ts` (delete if not a Worker)
-- `.github/workflows/ci.yml` standard ChittyOS CI
+The initial builder contracts live in `identity/schemas`:
 
-## Bootstrap
+- `builder.fractal.schema.json`
+- `build-packet.schema.json`
+- `drop-spec-request.schema.json`
 
-After cloning your new repo from this template:
+## Commands
 
 ```bash
-# 1. Edit scope.json — replace REPLACE-ME placeholders with your service name
-# 2. Edit CHARTER.md, CHITTY.md, CLAUDE.md — fill in REPLACE-ME blanks
-# 3. Install + verify
 npm install
-npm run validate:fractal     # confirms layout is valid
-npm run build                # confirms toolchain is happy
-
-# 4. Register your scope
-# Once your scope.json is filled in:
-curl -X POST https://register.chitty.cc/api/v1/scopes -H 'Content-Type: application/json' -d @scope.json
+npm run validate:fractal
+npm run build
+npm test
+npm run lint
 ```
-
-## Fractal compliance
-
-Your repo must validate against the fractal-layout meta-schema served at `https://schema.chitty.cc/meta/fractal-layout.schema.json`. The validator (`npm run validate:fractal`) walks your repo and enforces:
-
-- Required root files: `scope.json`, `CHARTER.md`, `CHITTY.md`, `CLAUDE.md`, `README.md`, `package.json`, `tsconfig.json`
-- Required root dirs: `identity/`, `authority/`, `connectivity/`, `scopes/`
-- Trinity-slot rules: no `api/`/`migrations/`/`integrations/` under `identity/`; no `src/`/`types/`/`validators/`/`agents/` under `connectivity/`
-- Each `scopes/<child>/` must have its own valid `scope.json` (recursive validation)
-
-## Inheritance (sub-services)
-
-When you add a sub-service under `scopes/<child>/`, only declare its own deltas. The child's `scope.json` references the parent via `parent_scope_id` and `inherits.{identity,authority,connectivity}` controls which layers are inherited vs. overridden. Default behavior: inherit authority (CHARTER, canon, owners), declare your own identity (code, agents) and connectivity (api, migrations).
-
-## Why this layout
-
-The data layer ships a **fractal scopes primitive** in chittyos-core (`scopes` / `scope_parties` / `scope_events` / `scope_artifacts`, self-similar via `parent_scope_id`). This template extends the same shape to the directory layer:
-
-| Data layer | Repo layer |
-|---|---|
-| `scopes.scope_type` | `scope.json.scope_type` (free text) |
-| `scope_parties` | `parties/` (folded into `identity/agents` + `authority/owners`) |
-| `scope_events` | `connectivity/migrations` + `connectivity/releases` + `connectivity/deployments` |
-| `scope_artifacts` | `identity/src` (the things the scope produces) |
-| `parent_scope_id` | `scopes/<child>/` nesting + `scope.json.parent_scope_id` |
-
-Discovery is uniform across every ChittyOS repo: `parties/agents/<service>-overlord.md`, `authority/CHARTER.md`, `connectivity/api/index.ts`, etc.
-
-## Refs
-
-- [chittyschema](https://github.com/chittyfoundation/chittyschema) — the schema authority that serves these meta-schemas
-- `chittycanon://gov/governance#core-types` — canonical 5 entity types (P/L/T/E/A)
-- `chittycanon://core/services/chittyschema#meta/fractal-layout` — fractal layout contract
-- `chittycanon://core/services/chittyschema#meta/repo-scope` — scope manifest contract
-
-## License
-
-MIT

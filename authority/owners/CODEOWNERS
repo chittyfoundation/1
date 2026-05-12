@@ -1,16 +1,10 @@
-# CODEOWNERS for REPLACE-ME
+# CODEOWNERS for chittyprime
 #
-# Per the ChittyOS per-service ownership pattern, this file declares who
-# owns each part of the repo. The Schema Owner Manifest at
-# https://schema.chitty.cc/api/owners aggregates these across the ecosystem.
-
-# Default — replace with your team
-* @chittyfoundation/REPLACE-ME-team
-
-# Authority documents — require canonical review
-/CHARTER.md @chittyfoundation/canon-team
-/CHITTY.md @chittyfoundation/canon-team
-/authority/canon/ @chittyfoundation/canon-team
-
-# Migrations — require schema overlord review
-/connectivity/migrations/ @chittyfoundation/schema-team
+# Ownership entries are intentionally omitted until canonical owners are
+# explicitly confirmed. Repo admin must populate ownership here before
+# protected paths take effect. Do not fill in placeholder handles or teams
+# that do not exist in the chittyfoundation org.
+#
+# Format reference:
+#   * @handle
+#   /CHARTER.md @handle-or-team

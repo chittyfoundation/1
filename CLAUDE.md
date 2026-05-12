@@ -2,12 +2,12 @@
 
 ## Project Overview
 
-REPLACE-ME — describe what this service does in 1–2 sentences.
+ChittyPrime is the ChittyOS builder fractal. It turns rough intent into a governed build packet, scaffold plan, and validation-ready artifact set.
 
-**Repo:** `CHITTYFOUNDATION/REPLACE-ME` (or `CHITTYOS/REPLACE-ME`, `chittyapps/REPLACE-ME`)
-**Deploy:** Cloudflare Workers at `REPLACE-ME.chitty.cc` (if applicable)
-**Stack:** Hono TypeScript, Zod, PostgreSQL (if applicable)
-**Canonical URI:** `chittycanon://core/services/REPLACE-ME` | Tier 5
+**Repo:** `CHITTYFOUNDATION/chittyprime`
+**Deploy:** Cloudflare Workers at `chittyprime.chitty.cc`
+**Stack:** Hono TypeScript, Zod
+**Canonical URI:** `chittycanon://core/services/chittyprime` | Tier 0
 **Generated from:** `CHITTYFOUNDATION/chittyseed-fractal`
 
 ## Repository Layout — Fractal Trinity
@@ -20,8 +20,8 @@ This repo follows the **ChittyOS fractal trinity** (identity / authority / conne
 │   ├── src/                  # source code
 │   ├── agents/               # subagent definitions (specific to this service)
 │   ├── scripts/              # build / generation / validation scripts
-│   ├── schemas/              # JSON Schema definitions
-│   └── docs/                 # documentation
+│   ├── schemas/              # JSON Schema definitions for builder scopes and build packets
+│   └── docs/                 # builder docs
 │
 ├── authority/                # ChittyTrust + ChittyCert + ChittyCanon — weight
 │   ├── canon/                # chittycanon:// citations
@@ -42,61 +42,40 @@ This repo follows the **ChittyOS fractal trinity** (identity / authority / conne
 ├── scope.json                # fractal scope manifest at repo root
 ├── CHARTER.md                # API contract
 ├── CHITTY.md                 # architecture
+├── AGENTS.md                 # builder agent inventory
 ├── CLAUDE.md                 # this file
 ├── package.json
 ├── tsconfig.json
-└── wrangler.jsonc            # if Cloudflare Worker
+└── wrangler.jsonc
 ```
 
 ## Common Commands
 
 ```bash
-npm install              # Install dependencies
-npm run build            # tsc + tsc-alias → identity/dist
-npm run dev              # tsx watch identity/src/index.ts
-npm run dev:api          # wrangler dev on connectivity/api/index.ts
-npm run deploy           # wrangler deploy
-npm test                 # vitest run
-npm run lint             # eslint identity/src
-```
-
-### Fractal compliance
-
-```bash
-npm run validate:fractal   # Validate this repo against fractal-layout meta-schema
-npm run certify            # Run ChittySchema service-compliance certification
+npm install
+npm run validate:fractal
+npm run build
+npm test
+npm run lint
 ```
 
 ## Per-Service Ownership Pattern (BINDING)
 
-- **Subagents** that are SPECIFIC to this service live in `identity/agents/`
-- **Authority documents** (CHARTER.md, CHITTY.md, CLAUDE.md) live at repo root
-- **Detailed dev guide** (if needed beyond CLAUDE.md) lives at `authority/DEV_GUIDE.md`
-- **Service-specific schemas** live at `identity/schemas/`
-- **Migrations for tables this service owns** live at `connectivity/migrations/<db>/`
-
-If a sub-service is added under `scopes/<child>/`, it inherits identity/authority/connectivity from its parent unless `scope.json.inherits` declares otherwise. Children only declare their own deltas.
+- Builder contracts live in `identity/schemas/`
+- Drop-spec and builder docs live in `identity/docs/`
+- Root governance lives in `CHARTER.md`, `CHITTY.md`, `AGENTS.md`, and `authority/owners/`
 
 ## No Mocks / No Fake Data / No Placeholder Endpoints (BINDING)
 
-Every endpoint, every test, every PR must validate against real backends. See the global policy in `~/.claude/CLAUDE.md`.
-
 For this service:
-- All routes execute real queries against the manifested datastores
-- Tests exercise real behavior — no `vi.mock` of DB modules in new tests
-- Schema PRs include real-Neon validation evidence in the body
-- `npm run certify` must be green before merge
-
-## Canonical Entity Types (P/L/T/E/A — BINDING)
-
-If this service touches entities, all five types apply:
-- **P** Person, **L** Location, **T** Thing, **E** Event, **A** Authority
-- ChittyID format: `VV-G-LLL-SSSS-T-YM-C-X` where `T` ∈ `{P,L,T,E,A}`
-- Source: `chittycanon://gov/governance#core-types`
+- All routes execute real request validation and decomposition logic
+- Tests exercise real builder logic and Hono routes without mocks
+- Builder changes must keep `npm run validate:fractal`, `npm run build`, and `npm test` green
 
 ## Related Services
 
-- **ChittySchema** — Meta-schemas + Owner Manifest. This repo validates against `chittycanon://core/services/chittyschema#meta/fractal-layout`.
-- **ChittyRegister** — Service registration. Register this scope via `scope.json`.
-- **ChittyCertify** — Compliance certification.
-- **ChittyTrack** — Tail consumer for observability.
+- **ChittyCanon** — Canon terms and canonical URI governance
+- **ChittySchema** — Builder scope and build-packet contracts
+- **ChittyCertify** — Compliance certification
+- **ChittyRegister** — Scope registration
+- **ChittyTrust / ChittyScore** — TY / VY / RY scoring

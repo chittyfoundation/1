@@ -1,9 +1,6 @@
-// REPLACE-ME — Cloudflare Workers configuration
-//
-// Delete this file if your service does not deploy to Cloudflare Workers.
-// Update `name`, `account_id`, and `routes` for your service.
+// ChittyPrime — Cloudflare Workers configuration
 {
-  "name": "REPLACE-ME",
+  "name": "chittyprime",
   "main": "connectivity/api/index.ts",
   "compatibility_date": "2026-04-01",
   "compatibility_flags": [
@@ -12,19 +9,14 @@
   "workers_dev": false,
   "routes": [
     {
-      "pattern": "REPLACE-ME.chitty.cc/*",
+      "pattern": "chittyprime.chitty.cc/*",
       "zone_name": "chitty.cc"
     }
   ],
   "vars": {
     "ENVIRONMENT": "production",
-    "SERVICE_NAME": "REPLACE-ME"
+    "SERVICE_NAME": "chittyprime"
   },
-  "tail_consumers": [
-    {
-      "service": "chittytrack"
-    }
-  ],
   "build": {
     "command": "npm run build:api"
   },
