@@ -4,6 +4,8 @@ export const SERVICE_NAME = 'chittyprime';
 export const BUILDER_SCOPE_SCHEMA_FILE = 'builder.fractal.schema.json';
 export const BUILD_PACKET_SCHEMA_FILE = 'build-packet.schema.json';
 export const DROP_SPEC_REQUEST_SCHEMA_FILE = 'drop-spec-request.schema.json';
+const MAX_SUMMARY_LENGTH = 180;
+const MAX_SUMMARY_CONTENT_LENGTH = MAX_SUMMARY_LENGTH - 3;
 
 const inputTypes = ['spec', 'idea', 'repo', 'workflow', 'schema', 'agent', 'document_model'] as const;
 const artifactTypes = ['service', 'workflow', 'schema', 'agent', 'pipeline', 'doc_model', 'policy'] as const;
@@ -183,6 +185,10 @@ const nextActions: NextAction[] = [
 ];
 
 function slugify(value: string): string {
+  if (!value.trim()) {
+    return 'unnamed-build';
+  }
+
   const slug = value
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
@@ -193,13 +199,15 @@ function slugify(value: string): string {
 
 function summarizeSpec(rawSpec: string): string {
   const normalized = rawSpec.replace(/\s+/g, ' ').trim();
-  return normalized.length > 180 ? `${normalized.slice(0, 177)}...` : normalized;
+  return normalized.length > MAX_SUMMARY_LENGTH
+    ? `${normalized.slice(0, MAX_SUMMARY_CONTENT_LENGTH)}...`
+    : normalized;
 }
 
 function createGeneratedArtifacts(desiredOutputs: string[]): GeneratedArtifact[] {
   return desiredOutputs.map((name) => ({
     name,
-    path: name.includes('/') ? name : `/${name}`,
+    path: name.startsWith('/') ? name : `/${name}`,
     status: 'planned',
   }));
 }

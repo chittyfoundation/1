@@ -62,6 +62,19 @@ describe('createBuildPacket', () => {
     expect(packet.identity.name).toBe('unnamed-build');
     expect(packet.packet_id).toBe('packet_unnamed-build');
   });
+
+  it('normalizes generated artifact paths to absolute-style paths', () => {
+    const packet = createBuildPacket({
+      ...request,
+      desired_outputs: ['scope.json', 'templates/charter.md.hbs', '/AGENTS.md'],
+    });
+
+    expect(packet.generated_artifacts).toEqual([
+      expect.objectContaining({ path: '/scope.json' }),
+      expect.objectContaining({ path: '/templates/charter.md.hbs' }),
+      expect.objectContaining({ path: '/AGENTS.md' }),
+    ]);
+  });
 });
 
 describe('createBuildEnvelope', () => {

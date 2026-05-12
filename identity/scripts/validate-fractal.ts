@@ -34,11 +34,24 @@ async function main(): Promise<void> {
     }),
   );
 
-  const scope = JSON.parse(await readFile(path.join(repoRoot, 'scope.json'), 'utf8')) as {
+  let scope: {
     name?: string;
     scope_type?: string;
     canon_uri?: string;
   };
+
+  try {
+    scope = JSON.parse(await readFile(path.join(repoRoot, 'scope.json'), 'utf8')) as {
+      name?: string;
+      scope_type?: string;
+      canon_uri?: string;
+    };
+  } catch (error) {
+    console.error(
+      `Failed to parse scope.json: ${error instanceof Error ? error.message : String(error)}`,
+    );
+    process.exit(1);
+  }
 
   if (scope.name !== 'chittyprime') {
     errors.push('scope.json name must be "chittyprime".');
@@ -63,4 +76,7 @@ async function main(): Promise<void> {
   console.log('Fractal validation passed.');
 }
 
-void main();
+main().catch((error) => {
+  console.error(`Unexpected error: ${error instanceof Error ? error.message : String(error)}`);
+  process.exit(1);
+});
