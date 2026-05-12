@@ -1,14 +1,14 @@
 {
   "$schema": "https://schema.chitty.cc/meta/repo-scope.schema.json",
-  "scope_type": "service",
-  "characterization": "Service",
-  "status": "new",
+  "scope_type": "builder.fractal",
+  "characterization": "Project",
+  "status": "draft",
   "parent_scope_id": null,
-  "canon_uri": "chittycanon://core/services/REPLACE-ME",
+  "canon_uri": "chittycanon://core/services/chittyprime",
   "owner_org": "CHITTYFOUNDATION",
-  "tier": 5,
-  "name": "REPLACE-ME",
-  "description": "Replace this with a one-line description of what this service does.",
+  "tier": 0,
+  "name": "chittyprime",
+  "description": "The builder fractal that turns rough intent into governed build packets for ChittyOS.",
   "trinity": {
     "identity": {
       "src": "identity/src",

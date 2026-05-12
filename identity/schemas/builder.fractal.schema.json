@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schema.chitty.cc/chittyprime/builder.fractal.schema.json",
+  "title": "Builder Fractal Scope",
+  "type": "object",
+  "required": ["scope_type", "characterization", "metadata"],
+  "properties": {
+    "scope_type": {
+      "const": "builder.fractal"
+    },
+    "characterization": {
+      "const": "Project"
+    },
+    "metadata": {
+      "type": "object",
+      "required": [
+        "builder_version",
+        "input_type",
+        "target_artifact_type",
+        "canonical_uri_candidate",
+        "status",
+        "owner",
+        "risk_level",
+        "requires_human_approval"
+      ],
+      "properties": {
+        "builder_version": {
+          "type": "string"
+        },
+        "input_type": {
+          "enum": ["spec", "idea", "repo", "workflow", "schema", "agent", "document_model"]
+        },
+        "target_artifact_type": {
+          "enum": ["service", "workflow", "schema", "agent", "pipeline", "doc_model", "policy"]
+        },
+        "canonical_uri_candidate": {
+          "type": "string"
+        },
+        "status": {
+          "enum": ["draft", "decomposed", "scaffolded", "validated", "certified", "canonical"]
+        },
+        "owner": {
+          "type": "string"
+        },
+        "risk_level": {
+          "enum": ["low", "medium", "high", "restricted"]
+        },
+        "requires_human_approval": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

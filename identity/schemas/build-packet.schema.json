@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schema.chitty.cc/chittyprime/build-packet.schema.json",
+  "title": "Build Packet",
+  "type": "object",
+  "required": [
+    "packet_id",
+    "builder_scope_id",
+    "source_spec_artifact_id",
+    "identity",
+    "authority",
+    "connectivity",
+    "execution",
+    "evidence",
+    "evaluation",
+    "evolution",
+    "generated_artifacts",
+    "blockers",
+    "next_actions",
+    "scorecard"
+  ],
+  "properties": {
+    "packet_id": {
+      "type": "string"
+    },
+    "builder_scope_id": {
+      "type": "string"
+    },
+    "source_spec_artifact_id": {
+      "type": "string"
+    },
+    "identity": {
+      "type": "object",
+      "required": ["name", "description", "artifact_type", "canonical_uri", "domain", "tier", "owner", "visibility"],
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "artifact_type": {
+          "enum": ["service", "workflow", "schema", "agent", "pipeline", "doc_model", "policy"]
+        },
+        "canonical_uri": { "type": "string" },
+        "domain": { "type": "string" },
+        "tier": { "type": "number" },
+        "owner": { "type": "string" },
+        "visibility": { "type": "string" }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": ["canon_terms", "schema_contracts", "policy_refs", "approval_required", "certification_target", "legal_hold", "restricted_data"],
+      "properties": {
+        "canon_terms": { "type": "array", "items": { "type": "string" } },
+        "schema_contracts": { "type": "array", "items": { "type": "string" } },
+        "policy_refs": { "type": "array", "items": { "type": "string" } },
+        "approval_required": { "type": "boolean" },
+        "certification_target": { "type": "string" },
+        "legal_hold": { "type": "boolean" },
+        "restricted_data": { "type": "boolean" }
+      }
+    },
+    "connectivity": {
+      "type": "object",
+      "required": ["apis", "events", "queues", "buckets", "hyperdrive_bindings", "upstream_services", "downstream_services", "auth_required"],
+      "properties": {
+        "apis": { "type": "array", "items": { "type": "string" } },
+        "events": { "type": "array", "items": { "type": "string" } },
+        "queues": { "type": "array", "items": { "type": "string" } },
+        "buckets": { "type": "array", "items": { "type": "string" } },
+        "hyperdrive_bindings": { "type": "array", "items": { "type": "string" } },
+        "upstream_services": { "type": "array", "items": { "type": "string" } },
+        "downstream_services": { "type": "array", "items": { "type": "string" } },
+        "auth_required": { "type": "boolean" }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "required": ["runtime", "workflows", "agents", "miniloops", "queues", "schedules", "deployment_environments"],
+      "properties": {
+        "runtime": { "type": "string" },
+        "workflows": { "type": "array", "items": { "type": "string" } },
+        "agents": { "type": "array", "items": { "type": "string" } },
+        "miniloops": { "type": "array", "items": { "type": "string" } },
+        "queues": { "type": "array", "items": { "type": "string" } },
+        "schedules": { "type": "array", "items": { "type": "string" } },
+        "deployment_environments": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["scope_events", "scope_artifacts", "audit_required", "ledger_candidate_policy", "retention_policy"],
+      "properties": {
+        "scope_events": { "type": "array", "items": { "type": "string" } },
+        "scope_artifacts": { "type": "array", "items": { "type": "string" } },
+        "audit_required": { "type": "boolean" },
+        "ledger_candidate_policy": { "type": "string" },
+        "retention_policy": { "type": "string" }
+      }
+    },
+    "evaluation": {
+      "type": "object",
+      "required": ["acceptance_criteria", "rubrics", "tests", "replay_sets", "third_party_evaluator", "minimum_score"],
+      "properties": {
+        "acceptance_criteria": { "type": "array", "items": { "type": "string" } },
+        "rubrics": { "type": "array", "items": { "type": "string" } },
+        "tests": { "type": "array", "items": { "type": "string" } },
+        "replay_sets": { "type": "array", "items": { "type": "string" } },
+        "third_party_evaluator": { "type": "boolean" },
+        "minimum_score": { "type": "number" }
+      }
+    },
+    "evolution": {
+      "type": "object",
+      "required": ["alchemist_enabled", "allowed_patch_types", "requires_replay", "requires_human_approval", "promotion_policy"],
+      "properties": {
+        "alchemist_enabled": { "type": "boolean" },
+        "allowed_patch_types": { "type": "array", "items": { "type": "string" } },
+        "requires_replay": { "type": "boolean" },
+        "requires_human_approval": { "type": "boolean" },
+        "promotion_policy": { "type": "string" }
+      }
+    },
+    "generated_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "path", "status"],
+        "properties": {
+          "name": { "type": "string" },
+          "path": { "type": "string" },
+          "status": { "const": "planned" }
+        }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "layer", "description", "severity"],
+        "properties": {
+          "id": { "type": "string" },
+          "layer": { "enum": ["authority", "connectivity"] },
+          "description": { "type": "string" },
+          "severity": { "enum": ["medium", "high"] }
+        }
+      }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["task", "output"],
+        "properties": {
+          "task": { "type": "string" },
+          "output": { "type": "string" }
+        }
+      }
+    },
+    "scorecard": {
+      "type": "object",
+      "required": ["ty", "vy", "ry", "threshold", "meets_threshold"],
+      "properties": {
+        "ty": { "type": "number" },
+        "vy": { "type": "number" },
+        "ry": { "type": "number" },
+        "threshold": { "type": "number" },
+        "meets_threshold": { "type": "boolean" }
+      }
+    }
+  },
+  "additionalProperties": false
+}

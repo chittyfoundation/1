@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schema.chitty.cc/chittyprime/drop-spec-request.schema.json",
+  "title": "Drop Spec Request",
+  "type": "object",
+  "required": [
+    "input_type",
+    "target_artifact_type",
+    "title",
+    "raw_spec",
+    "desired_outputs"
+  ],
+  "properties": {
+    "input_type": {
+      "enum": ["spec", "idea", "repo", "workflow", "schema", "agent", "document_model"]
+    },
+    "target_artifact_type": {
+      "enum": ["service", "workflow", "schema", "agent", "pipeline", "doc_model", "policy"]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "raw_spec": {
+      "type": "string",
+      "minLength": 1
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["boolean", "number", "string"]
+      }
+    },
+    "desired_outputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "execution_mode": {
+      "enum": ["scaffold_only", "approval_required", "execute"]
+    }
+  },
+  "additionalProperties": false
+}

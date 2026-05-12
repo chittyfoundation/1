@@ -1,16 +1,10 @@
-# CODEOWNERS for REPLACE-ME
-#
-# Per the ChittyOS per-service ownership pattern, this file declares who
-# owns each part of the repo. The Schema Owner Manifest at
-# https://schema.chitty.cc/api/owners aggregates these across the ecosystem.
+# CODEOWNERS for chittyprime
 
-# Default — replace with your team
-* @chittyfoundation/REPLACE-ME-team
+* @nickchitty @chittyfoundation/canon-team
 
-# Authority documents — require canonical review
 /CHARTER.md @chittyfoundation/canon-team
 /CHITTY.md @chittyfoundation/canon-team
+/AGENTS.md @chittyfoundation/canon-team
 /authority/canon/ @chittyfoundation/canon-team
-
-# Migrations — require schema overlord review
+/identity/schemas/ @chittyfoundation/schema-team
 /connectivity/migrations/ @chittyfoundation/schema-team

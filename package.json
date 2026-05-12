@@ -1,7 +1,7 @@
 {
-  "name": "@chittyos/REPLACE-ME",
+  "name": "@chittyos/chittyprime",
   "version": "0.1.0",
-  "description": "REPLACE-ME — describe what this service does",
+  "description": "ChittyPrime turns rough intent into governed build packets for ChittyOS",
   "main": "identity/dist/index.js",
   "types": "identity/dist/index.d.ts",
   "type": "module",
@@ -14,8 +14,8 @@
     "test:watch": "vitest",
     "lint": "eslint identity/src --ext .ts",
     "format": "prettier --write \"identity/src/**/*.ts\"",
-    "validate:fractal": "npx --yes @chittyos/schema validate-fractal .",
-    "certify": "npx --yes @chittyos/schema certify .",
+    "validate:fractal": "tsx identity/scripts/validate-fractal.ts",
+    "certify": "npm run validate:fractal && npm run build && npm test",
     "deploy": "wrangler deploy",
     "deploy:staging": "wrangler deploy --env staging",
     "deploy:production": "wrangler deploy --env production",
@@ -49,6 +49,7 @@
     "CHARTER.md",
     "CHITTY.md",
     "README.md",
+    "AGENTS.md",
     "LICENSE"
   ],
   "publishConfig": {

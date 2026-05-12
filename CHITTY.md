@@ -1,44 +1,49 @@
 ---
-uri: chittycanon://docs/tech/architecture/REPLACE-ME-architecture
+uri: chittycanon://docs/tech/architecture/chittyprime-architecture
 type: summary
 status: DRAFT
 ---
 
-# REPLACE-ME Architecture
+# ChittyPrime Architecture
 
 ## Ecosystem Position
 
-Describe where this service sits in the ChittyOS ecosystem. What tier? What does it consume? What consumes it?
+ChittyPrime is a foundation-layer builder fractal. It sits before implementation and execution, converting rough intent into a governed artifact that ChittyCanon, ChittySchema, ChittyCertify, ChittyRegister, ChittyTrust, and ChittyScore can validate or promote.
 
-## Stack
+## Core Flow
 
-- TypeScript (Cloudflare Workers via Hono)
-- Neon PostgreSQL (if applicable)
-- Generated types/validators via `@chittyos/schema`
-
-## Repository Layout — Fractal Trinity
-
-This repo follows the ChittyOS fractal trinity layout. See `scope.json` for the manifest.
-
-```
-identity/      # ChittyID layer — what this service IS (src, agents, schemas, scripts)
-authority/    # ChittyTrust + ChittyCert + ChittyCanon — weight (canon, certifications, owners)
-connectivity/ # ChittyConnect + ChittyRouter — interaction (api, integrations, migrations, releases, deployments, consumers, upstreams)
-scopes/       # nested fractal sub-services (recursive)
+```text
+Input Spec
+→ Builder Scope
+→ Fractal Decomposition
+→ Build Packet
+→ Scaffold Plan
+→ Validate / Replay / Certify
+→ Approve + Execute
 ```
 
-See `chittycanon://core/services/chittyschema#meta/fractal-layout` for the layout contract.
+## Seven Builder Layers
 
-## Data Plane
+1. **Identity** — what the thing is
+2. **Authority** — why it is allowed
+3. **Connectivity** — what it connects to
+4. **Execution** — how it runs
+5. **Evidence** — how it proves what happened
+6. **Evaluation** — how it is judged
+7. **Evolution** — how it improves safely
 
-If this service owns or reads tables, list them here:
-- `<table>` (canon type, owner)
-- ...
+## Current Implementation
 
-## Consumers
+- Shared TypeScript builder logic in `identity/src/`
+- Cloudflare Worker API routes in `connectivity/api/`
+- Builder JSON Schemas in `identity/schemas/`
+- Drop-spec documentation in `identity/docs/`
+- Root governance and ownership docs at repo root and `authority/owners/`
 
-(Populated by the Schema Owner Manifest sync.)
+## TY / VY / RY Loop
 
-## Upstreams
+- **TY** checks whether identity is structurally coherent
+- **VY** checks connectivity completeness
+- **RY** checks authority and certification readiness
 
-(Declared in `connectivity/upstreams/`.)
+Promotion remains blocked until the scorecard crosses the configured threshold and the blocking authority items are resolved.
