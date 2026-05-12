@@ -38,6 +38,19 @@ describe('createBuildPacket', () => {
       ]),
     );
     expect(packet.scorecard.meets_threshold).toBe(false);
+    expect(packet.next_actions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          task: 'Confirm the canon term and canonical URI with ChittyCanon.',
+        }),
+        expect.objectContaining({
+          task: 'Publish the builder scope and build-packet schemas through ChittySchema.',
+        }),
+        expect.objectContaining({
+          task: 'Wire approval, certification, and registration integrations before promotion.',
+        }),
+      ]),
+    );
   });
 
   it('normalizes titles into safe slugs and truncates long normalized specs', () => {

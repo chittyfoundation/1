@@ -17,11 +17,6 @@
     "ENVIRONMENT": "production",
     "SERVICE_NAME": "chittyprime"
   },
-  "tail_consumers": [
-    {
-      "service": "chittytrack"
-    }
-  ],
   "build": {
     "command": "npm run build:api"
   },

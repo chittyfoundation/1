@@ -1,10 +1,4 @@
 # CODEOWNERS for chittyprime
-
-* @nickchitty @chittyfoundation/canon-team
-
-/CHARTER.md @chittyfoundation/canon-team
-/CHITTY.md @chittyfoundation/canon-team
-/AGENTS.md @chittyfoundation/canon-team
-/authority/canon/ @chittyfoundation/canon-team
-/identity/schemas/ @chittyfoundation/schema-team
-/connectivity/migrations/ @chittyfoundation/schema-team
+#
+# Ownership entries are intentionally omitted until canonical owners are
+# explicitly confirmed.

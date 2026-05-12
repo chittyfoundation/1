@@ -79,4 +79,3 @@ For this service:
 - **ChittyCertify** — Compliance certification
 - **ChittyRegister** — Scope registration
 - **ChittyTrust / ChittyScore** — TY / VY / RY scoring
-- **ChittyTrack** — Tail consumer for observability

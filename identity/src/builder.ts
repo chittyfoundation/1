@@ -161,29 +161,6 @@ const miniloops = [
   'AlchemistImprovementLoop',
 ];
 
-const nextActions: NextAction[] = [
-  {
-    task: 'Create Builder Fractal scope profile',
-    output: BUILDER_SCOPE_SCHEMA_FILE,
-  },
-  {
-    task: 'Create Build Packet schema',
-    output: BUILD_PACKET_SCHEMA_FILE,
-  },
-  {
-    task: 'Create drop-spec API envelope',
-    output: 'POST /api/v1/builds contract',
-  },
-  {
-    task: 'Create CHARTER/CHITTY/AGENTS templates',
-    output: 'templates/*.hbs',
-  },
-  {
-    task: 'Run ChittyAgent Fabric spec through Builder as first fixture',
-    output: 'build packet + scaffold diff',
-  },
-];
-
 function slugify(value: string): string {
   if (!value.trim()) {
     return 'unnamed-build';
@@ -255,10 +232,38 @@ function createScorecard(blockers: Blocker[]): Scorecard {
   };
 }
 
+function createNextActions(blockers: Blocker[]): NextAction[] {
+  return blockers.map((blocker) => {
+    switch (blocker.id) {
+      case 'canon-registration':
+        return {
+          task: 'Confirm the canon term and canonical URI with ChittyCanon.',
+          output: 'registered canon term and confirmed canonical URI',
+        };
+      case 'schema-publication':
+        return {
+          task: 'Publish the builder scope and build-packet schemas through ChittySchema.',
+          output: `${BUILDER_SCOPE_SCHEMA_FILE}, ${BUILD_PACKET_SCHEMA_FILE}, ${DROP_SPEC_REQUEST_SCHEMA_FILE}`,
+        };
+      case 'promotion-integrations':
+        return {
+          task: 'Wire approval, certification, and registration integrations before promotion.',
+          output: 'connected ChittyCertify and ChittyRegister promotion flow',
+        };
+      default:
+        return {
+          task: blocker.description,
+          output: blocker.id,
+        };
+    }
+  });
+}
+
 export function createBuildPacket(input: BuildRequest): BuildPacket {
   const slug = slugify(input.title);
   const canonicalUri = `chittycanon://core/services/${slug}`;
   const blockers = createBlockers(input.execution_mode);
+  const nextActions = createNextActions(blockers);
   const scorecard = createScorecard(blockers);
 
   return {

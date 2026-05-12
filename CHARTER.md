@@ -49,7 +49,6 @@ ChittyPrime turns rough intent into governed build packets for ChittyOS services
 | Upstream | ChittyCertify | Certification targets and gates |
 | Upstream | ChittyRegister | Scope registration after approval |
 | Upstream | ChittyTrust / ChittyScore | TY / VY / RY trust scoring |
-| Observability | ChittyTrack | Tail consumer |
 
 ## API Contract
 
