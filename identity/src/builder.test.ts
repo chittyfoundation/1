@@ -22,35 +22,50 @@ describe('createBuildPacket', () => {
     expect(packet.identity.name).toBe('chittyprime-builder-fractal');
     expect(packet.authority.schema_contracts).toContain(BUILDER_SCOPE_SCHEMA_FILE);
     expect(packet.connectivity.apis).toContain('POST /api/v1/builds');
-    expect(packet.execution.workflows).toContain('BuilderFractalWorkflow');
+    expect(packet.execution.runtime).toBe('cloudflare-workers');
     expect(packet.evidence.scope_artifacts).toEqual(request.desired_outputs);
-    expect(packet.evaluation.rubrics).toEqual(['TY', 'VY', 'RY']);
-    expect(packet.evolution.requires_human_approval).toBe(true);
+    expect(packet.evolution.promotion_policy).toBe('certified_only');
   });
 
-  it('surfaces blockers and keeps promotion below threshold until they are resolved', () => {
+  it('emits explicit nulls for unknown fields (no fabricated data)', () => {
+    const packet = createBuildPacket(request);
+
+    // Build packet must NOT invent agent lists, workflows, miniloops, queues,
+    // canon terms, rubrics, or scorecards. Those become real only when the
+    // upstream services confirm them. See reviewer feedback on PR #1.
+    expect(packet.authority.canon_terms).toBeNull();
+    expect(packet.authority.policy_refs).toBeNull();
+    expect(packet.connectivity.upstream_services).toBeNull();
+    expect(packet.connectivity.events).toBeNull();
+    expect(packet.connectivity.queues).toBeNull();
+    expect(packet.execution.workflows).toBeNull();
+    expect(packet.execution.agents).toBeNull();
+    expect(packet.execution.miniloops).toBeNull();
+    expect(packet.evaluation.rubrics).toBeNull();
+    expect(packet.evolution.alchemist_enabled).toBeNull();
+    expect(packet.scorecard).toBeNull();
+  });
+
+  it('surfaces blockers for every unresolved authority/connectivity/evaluation gap', () => {
     const packet = createBuildPacket(request);
 
     expect(packet.blockers).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ layer: 'authority' }),
-        expect.objectContaining({ layer: 'connectivity' }),
+        expect.objectContaining({ id: 'identity.canonical-uri-unassigned', layer: 'identity' }),
+        expect.objectContaining({ id: 'authority.canon-terms-unregistered', layer: 'authority' }),
+        expect.objectContaining({ id: 'authority.schema-contracts-unpublished', layer: 'authority' }),
+        expect.objectContaining({ id: 'connectivity.upstream-bindings-undeclared', layer: 'connectivity' }),
+        expect.objectContaining({ id: 'evaluation.scoring-not-implemented', layer: 'evaluation' }),
       ]),
     );
-    expect(packet.scorecard.meets_threshold).toBe(false);
-    expect(packet.next_actions).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          task: 'Confirm the canon term and canonical URI with ChittyCanon.',
-        }),
-        expect.objectContaining({
-          task: 'Publish the builder scope and build-packet schemas through ChittySchema.',
-        }),
-        expect.objectContaining({
-          task: 'Wire approval, certification, and registration integrations before promotion.',
-        }),
-      ]),
-    );
+  });
+
+  it('adds an execute-mode promotion blocker only when execute is requested', () => {
+    const scaffold = createBuildPacket(request);
+    const execute = createBuildPacket({ ...request, execution_mode: 'execute' });
+
+    expect(scaffold.blockers.map((b) => b.id)).not.toContain('connectivity.promotion-integrations-missing');
+    expect(execute.blockers.map((b) => b.id)).toContain('connectivity.promotion-integrations-missing');
   });
 
   it('normalizes titles into safe slugs and truncates long normalized specs', () => {
@@ -97,5 +112,6 @@ describe('createBuildEnvelope', () => {
     expect(envelope.status).toBe('decomposed');
     expect(envelope.build_id).toBe('build_chittyprime-builder-fractal');
     expect(envelope.build_packet.generated_artifacts).toHaveLength(request.desired_outputs.length);
+    expect(envelope.blockers.length).toBeGreaterThan(0);
   });
 });

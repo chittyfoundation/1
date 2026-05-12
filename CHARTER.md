@@ -14,11 +14,10 @@ visibility: INTERNAL
 
 ## Classification
 
-- **Canonical URI:** `chittycanon://core/services/chittyprime`
-- **Pattern URI candidate:** `chittycanon://tech/patterns/builder-fractal`
+- **Canonical URI:** `chittycanon://core/services/chittyprime` (proposed; not yet registered with ChittyCanon)
 - **Tier:** 0
 - **Organization:** CHITTYFOUNDATION
-- **Scope type:** `builder.fractal`
+- **Scope type:** `builder.fractal` (proposed; not yet registered with ChittySchema)
 - **Generated from:** `CHITTYFOUNDATION/chittyseed-fractal`
 
 ## Mission
@@ -31,8 +30,9 @@ ChittyPrime turns rough intent into governed build packets for ChittyOS services
 
 - Receiving structured drop-spec build requests
 - Producing builder-scope and build-packet artifacts
-- Scoring outputs through TY / VY / RY before promotion
 - Declaring blockers when canon, schema, certification, or connectivity gaps remain
+
+Scoring is **not** in scope for this iteration. A scoring producer must be implemented and verified before promotion gates can rely on numeric thresholds.
 
 ### IS NOT Responsible For
 
@@ -48,7 +48,8 @@ ChittyPrime turns rough intent into governed build packets for ChittyOS services
 | Upstream | ChittySchema | Builder scope and build-packet contracts |
 | Upstream | ChittyCertify | Certification targets and gates |
 | Upstream | ChittyRegister | Scope registration after approval |
-| Upstream | ChittyTrust / ChittyScore | TY / VY / RY trust scoring |
+| Upstream | ChittyTrust | Trust score queries (when scoring is implemented) |
+| Observability | ChittyTrack | Tail consumer |
 
 ## API Contract
 

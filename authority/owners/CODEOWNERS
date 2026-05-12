@@ -1,4 +1,10 @@
 # CODEOWNERS for chittyprime
 #
 # Ownership entries are intentionally omitted until canonical owners are
-# explicitly confirmed.
+# explicitly confirmed. Repo admin must populate ownership here before
+# protected paths take effect. Do not fill in placeholder handles or teams
+# that do not exist in the chittyfoundation org.
+#
+# Format reference:
+#   * @handle
+#   /CHARTER.md @handle-or-team

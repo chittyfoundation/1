@@ -33,24 +33,15 @@ type GeneratedArtifact = {
 
 type Blocker = {
   id: string;
-  layer: Extract<BuildLayer, 'authority' | 'connectivity'>;
+  layer: BuildLayer;
   description: string;
   severity: 'medium' | 'high';
 };
 
-type NextAction = {
-  task: string;
-  output: string;
-};
-
-type Scorecard = {
-  ty: number;
-  vy: number;
-  ry: number;
-  threshold: number;
-  meets_threshold: boolean;
-};
-
+// Build packet contains ONLY values derived from the user-supplied request,
+// the seven layer skeleton, and explicit blockers/unknowns. Hard-coded
+// fabricated lists of agents, miniloops, queues, workflows, or scorecards
+// have been removed — those must come from real configuration once it exists.
 type BuildPacket = {
   packet_id: string;
   builder_scope_id: string;
@@ -59,66 +50,65 @@ type BuildPacket = {
     name: string;
     description: string;
     artifact_type: BuildRequest['target_artifact_type'];
-    canonical_uri: string;
-    domain: string;
-    tier: number;
+    canonical_uri: string | null;
+    domain: string | null;
+    tier: number | null;
     owner: string;
     visibility: 'INTERNAL';
   };
   authority: {
-    canon_terms: string[];
     schema_contracts: string[];
-    policy_refs: string[];
     approval_required: boolean;
-    certification_target: 'Certified';
     legal_hold: boolean;
     restricted_data: boolean;
+    canon_terms: null;
+    policy_refs: null;
+    certification_target: null;
   };
   connectivity: {
     apis: string[];
-    events: string[];
-    queues: string[];
-    buckets: string[];
-    hyperdrive_bindings: string[];
-    upstream_services: string[];
-    downstream_services: string[];
+    upstream_services: null;
+    downstream_services: null;
+    events: null;
+    queues: null;
+    buckets: null;
+    hyperdrive_bindings: null;
     auth_required: boolean;
   };
   execution: {
     runtime: 'cloudflare-workers';
-    workflows: string[];
-    agents: string[];
-    miniloops: string[];
-    queues: string[];
-    schedules: string[];
     deployment_environments: string[];
+    workflows: null;
+    agents: null;
+    miniloops: null;
+    queues: null;
+    schedules: null;
   };
   evidence: {
-    scope_events: string[];
     scope_artifacts: string[];
     audit_required: boolean;
-    ledger_candidate_policy: 'accepted_outputs';
-    retention_policy: string;
+    scope_events: null;
+    ledger_candidate_policy: null;
+    retention_policy: null;
   };
   evaluation: {
-    acceptance_criteria: string[];
-    rubrics: string[];
     tests: string[];
-    replay_sets: string[];
-    third_party_evaluator: boolean;
-    minimum_score: number;
+    acceptance_criteria: null;
+    rubrics: null;
+    replay_sets: null;
+    third_party_evaluator: null;
+    minimum_score: null;
   };
   evolution: {
-    alchemist_enabled: boolean;
-    allowed_patch_types: string[];
-    requires_replay: boolean;
-    requires_human_approval: boolean;
     promotion_policy: 'certified_only';
+    alchemist_enabled: null;
+    allowed_patch_types: null;
+    requires_replay: null;
+    requires_human_approval: null;
   };
   generated_artifacts: GeneratedArtifact[];
   blockers: Blocker[];
-  next_actions: NextAction[];
-  scorecard: Scorecard;
+  scorecard: null;
 };
 
 type BuildEnvelope = {
@@ -127,39 +117,8 @@ type BuildEnvelope = {
   status: 'decomposed';
   build_packet_artifact_id: string;
   blockers: Blocker[];
-  next_actions: NextAction[];
   build_packet: BuildPacket;
 };
-
-const upstreamServices = [
-  'chittycanon',
-  'chittyschema',
-  'chittycertify',
-  'chittyregister',
-  'chittytrust',
-  'chittyscore',
-];
-
-const scaffoldAgents = [
-  'SpecIntakeAgent',
-  'FractalDecomposerAgent',
-  'CanonMapperAgent',
-  'SchemaMapperAgent',
-  'ConnectivityMapperAgent',
-  'ScaffoldAgent',
-  'ComplianceAgent',
-  'EvaluatorAgent',
-  'AlchemistAgent',
-];
-
-const miniloops = [
-  'SpecNormalizationLoop',
-  'FractalDecompositionLoop',
-  'ScaffoldGenerationLoop',
-  'ComplianceValidationLoop',
-  'ReplayValidationLoop',
-  'AlchemistImprovementLoop',
-];
 
 function slugify(value: string): string {
   if (!value.trim()) {
@@ -190,81 +149,60 @@ function createGeneratedArtifacts(desiredOutputs: string[]): GeneratedArtifact[]
 }
 
 function createBlockers(executionMode: BuildRequest['execution_mode']): Blocker[] {
-  return [
+  const blockers: Blocker[] = [
     {
-      id: 'canon-registration',
-      layer: 'authority',
+      id: 'identity.canonical-uri-unassigned',
+      layer: 'identity',
       description:
-        'ChittyCanon must register the `chitty.prime.builder` term and confirm the canonical URI before promotion.',
+        'A canonical URI has not been assigned. ChittyCanon must register the term and confirm the canonical URI before promotion.',
       severity: 'high',
     },
     {
-      id: 'schema-publication',
+      id: 'authority.canon-terms-unregistered',
+      layer: 'authority',
+      description:
+        'No canon terms have been registered for this builder output. ChittyCanon must accept the term set before any certification gate runs.',
+      severity: 'high',
+    },
+    {
+      id: 'authority.schema-contracts-unpublished',
       layer: 'authority',
       description:
         'ChittySchema must publish the builder scope and build-packet contracts before this scaffold can be certified.',
       severity: 'medium',
     },
     {
-      id: 'promotion-integrations',
+      id: 'connectivity.upstream-bindings-undeclared',
       layer: 'connectivity',
       description:
-        executionMode === 'execute'
-          ? 'Execute mode is blocked until ChittyCertify and ChittyRegister promotion integrations are wired.'
-          : 'Promotion remains blocked until ChittyCertify and ChittyRegister integrations are wired.',
-      severity: 'medium',
+        'Workers service bindings for upstream ChittyOS services have not been declared in wrangler.jsonc. Service-to-service auth requires bindings, not tokens.',
+      severity: 'high',
+    },
+    {
+      id: 'evaluation.scoring-not-implemented',
+      layer: 'evaluation',
+      description:
+        'TY / VY / RY scoring is not implemented in this build. Promotion remains blocked until a real scorecard producer exists.',
+      severity: 'high',
     },
   ];
-}
 
-function createScorecard(blockers: Blocker[]): Scorecard {
-  const threshold = 0.9;
-  const ty = 0.96;
-  const vy = blockers.some((blocker) => blocker.layer === 'connectivity') ? 0.74 : 0.93;
-  const ry = blockers.some((blocker) => blocker.layer === 'authority') ? 0.7 : 0.94;
+  if (executionMode === 'execute') {
+    blockers.push({
+      id: 'connectivity.promotion-integrations-missing',
+      layer: 'connectivity',
+      description:
+        'Execute mode is blocked: ChittyCertify and ChittyRegister promotion integrations are not wired.',
+      severity: 'high',
+    });
+  }
 
-  return {
-    ty,
-    vy,
-    ry,
-    threshold,
-    meets_threshold: ty >= threshold && vy >= threshold && ry >= threshold,
-  };
-}
-
-function createNextActions(blockers: Blocker[]): NextAction[] {
-  return blockers.map((blocker) => {
-    switch (blocker.id) {
-      case 'canon-registration':
-        return {
-          task: 'Confirm the canon term and canonical URI with ChittyCanon.',
-          output: 'registered canon term and confirmed canonical URI',
-        };
-      case 'schema-publication':
-        return {
-          task: 'Publish the builder scope and build-packet schemas through ChittySchema.',
-          output: `${BUILDER_SCOPE_SCHEMA_FILE}, ${BUILD_PACKET_SCHEMA_FILE}, ${DROP_SPEC_REQUEST_SCHEMA_FILE}`,
-        };
-      case 'promotion-integrations':
-        return {
-          task: 'Wire approval, certification, and registration integrations before promotion.',
-          output: 'connected ChittyCertify and ChittyRegister promotion flow',
-        };
-      default:
-        return {
-          task: blocker.description,
-          output: blocker.id,
-        };
-    }
-  });
+  return blockers;
 }
 
 export function createBuildPacket(input: BuildRequest): BuildPacket {
   const slug = slugify(input.title);
-  const canonicalUri = `chittycanon://core/services/${slug}`;
   const blockers = createBlockers(input.execution_mode);
-  const nextActions = createNextActions(blockers);
-  const scorecard = createScorecard(blockers);
 
   return {
     packet_id: `packet_${slug}`,
@@ -274,75 +212,65 @@ export function createBuildPacket(input: BuildRequest): BuildPacket {
       name: slug,
       description: summarizeSpec(input.raw_spec),
       artifact_type: input.target_artifact_type,
-      canonical_uri: canonicalUri,
-      domain: `${slug}.chitty.cc`,
-      tier: 0,
+      canonical_uri: null,
+      domain: null,
+      tier: null,
       owner: 'CHITTYFOUNDATION',
       visibility: 'INTERNAL',
     },
     authority: {
-      canon_terms: ['chitty.prime.builder', 'builder.fractal', `${input.target_artifact_type}.scaffold`],
       schema_contracts: [BUILDER_SCOPE_SCHEMA_FILE, BUILD_PACKET_SCHEMA_FILE, DROP_SPEC_REQUEST_SCHEMA_FILE],
-      policy_refs: [
-        'chittycanon://tech/patterns/builder-fractal',
-        'chittycanon://core/services/chittyschema#meta/repo-scope',
-        'chittycanon://core/services/chittyschema#meta/fractal-layout',
-      ],
       approval_required: true,
-      certification_target: 'Certified',
       legal_hold: false,
       restricted_data: Boolean(input.constraints.legal_data_in_legal_space),
+      canon_terms: null,
+      policy_refs: null,
+      certification_target: null,
     },
     connectivity: {
       apis: ['GET /health', 'GET /api/v1/status', 'POST /api/v1/builds'],
-      events: ['scope_events.build.created', 'scope_events.build.validated'],
-      queues: ['builder-validation-queue', 'builder-replay-queue'],
-      buckets: ['chittyprime-build-packets', 'chittyprime-artifacts'],
-      hyperdrive_bindings: ['CHITTYOS_CORE_DB'],
-      upstream_services: upstreamServices,
-      downstream_services: input.target_artifact_type === 'service' ? [slug] : [],
+      upstream_services: null,
+      downstream_services: null,
+      events: null,
+      queues: null,
+      buckets: null,
+      hyperdrive_bindings: null,
       auth_required: input.execution_mode === 'execute',
     },
     execution: {
       runtime: 'cloudflare-workers',
-      workflows: ['BuilderFractalWorkflow'],
-      agents: scaffoldAgents,
-      miniloops,
-      queues: ['builder-validation-queue', 'builder-replay-queue'],
-      schedules: [],
       deployment_environments: ['dev', 'staging', 'production'],
+      workflows: null,
+      agents: null,
+      miniloops: null,
+      queues: null,
+      schedules: null,
     },
     evidence: {
-      scope_events: ['build.created', 'build.decomposed', 'build.validated'],
       scope_artifacts: input.desired_outputs,
       audit_required: true,
-      ledger_candidate_policy: 'accepted_outputs',
-      retention_policy: 'Retain build packets, validation reports, and approval evidence for replay and certification.',
+      scope_events: null,
+      ledger_candidate_policy: null,
+      retention_policy: null,
     },
     evaluation: {
-      acceptance_criteria: [
-        'The raw spec produces a builder scope.',
-        'The builder scope decomposes into the seven ChittyPrime layers.',
-        'The build packet lists blockers for missing authority, schema, or connectivity.',
-        'Generated artifacts remain explicit and reviewable.',
-      ],
-      rubrics: ['TY', 'VY', 'RY'],
       tests: ['request schema validation', 'build packet generation', 'API contract coverage'],
-      replay_sets: [`${slug}-baseline`],
-      third_party_evaluator: false,
-      minimum_score: 0.9,
+      acceptance_criteria: null,
+      rubrics: null,
+      replay_sets: null,
+      third_party_evaluator: null,
+      minimum_score: null,
     },
     evolution: {
-      alchemist_enabled: true,
-      allowed_patch_types: ['prompt', 'schema', 'routing', 'rubric', 'model_policy', 'docs'],
-      requires_replay: true,
-      requires_human_approval: true,
       promotion_policy: 'certified_only',
+      alchemist_enabled: null,
+      allowed_patch_types: null,
+      requires_replay: null,
+      requires_human_approval: null,
     },
     generated_artifacts: createGeneratedArtifacts(input.desired_outputs),
     blockers,
-    next_actions: nextActions,
-    scorecard,
+    scorecard: null,
   };
 }
 
@@ -355,7 +283,6 @@ export function createBuildEnvelope(request: BuildRequest): BuildEnvelope {
     status: 'decomposed',
     build_packet_artifact_id: `artifact_${buildPacket.identity.name}_build_packet`,
     blockers: buildPacket.blockers,
-    next_actions: buildPacket.next_actions,
     build_packet: buildPacket,
   };
 }

@@ -1,15 +1,7 @@
 # ChittyPrime Agents
 
-ChittyPrime is the builder of governed ChittyOS artifacts.
+No agents are currently registered for this service.
 
-## Bootstrap agent set
+Service-local agents live in `identity/agents/`. Each agent file declares its canonical URI, capability_group, execution_class, authority, and bindings. Agents are registered with the ChittyAgent Orchestrator via `npm run bootstrap` (when an `identity/scripts/bootstrap.sh` exists in this repo).
 
-- **SpecIntakeAgent** — normalizes rough intent into a structured request
-- **FractalDecomposerAgent** — maps requirements into the seven builder layers
-- **CanonMapperAgent** — proposes canon terms and canonical URI candidates
-- **SchemaMapperAgent** — maps required contracts and schema gaps
-- **ConnectivityMapperAgent** — maps APIs, queues, bindings, and service boundaries
-- **ScaffoldAgent** — plans the generated artifact set
-- **ComplianceAgent** — reports certification and policy blockers
-- **EvaluatorAgent** — applies TY / VY / RY scoring
-- **AlchemistAgent** — proposes safe improvements without silent mutation
+Add agents only after their canonical URIs and runtime behavior are real and verifiable — do not list agents that have not yet been implemented and registered.

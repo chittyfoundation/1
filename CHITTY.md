@@ -8,7 +8,7 @@ status: DRAFT
 
 ## Ecosystem Position
 
-ChittyPrime is a foundation-layer builder fractal. It sits before implementation and execution, converting rough intent into a governed artifact that ChittyCanon, ChittySchema, ChittyCertify, ChittyRegister, ChittyTrust, and ChittyScore can validate or promote.
+ChittyPrime is a foundation-layer builder fractal. It sits before implementation and execution, converting rough intent into a governed artifact that ChittyCanon, ChittySchema, ChittyCertify, ChittyRegister, and ChittyTrust can validate or promote.
 
 ## Core Flow
 
@@ -40,10 +40,6 @@ Input Spec
 - Drop-spec documentation in `identity/docs/`
 - Root governance and ownership docs at repo root and `authority/owners/`
 
-## TY / VY / RY Loop
+## Promotion Gating
 
-- **TY** checks whether identity is structurally coherent
-- **VY** checks connectivity completeness
-- **RY** checks authority and certification readiness
-
-Promotion remains blocked until the scorecard crosses the configured threshold and the blocking authority items are resolved.
+Promotion remains blocked while the build packet emits unresolved blockers (see `identity/src/builder.ts`). The current implementation does **not** produce a numeric scorecard — `scorecard` is emitted as `null`. A scoring producer (rubrics, thresholds, judges) must be designed and implemented separately before promotion gates can rely on thresholds. Until then, gating is binary: any unresolved blocker prevents promotion.
