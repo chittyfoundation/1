@@ -4,7 +4,7 @@
 
 ChittyPrime is the ChittyOS builder fractal. It turns rough intent into a governed build packet, scaffold plan, and validation-ready artifact set.
 
-**Repo:** `CHITTYFOUNDATION/1`
+**Repo:** `CHITTYFOUNDATION/chittyprime`
 **Deploy:** Cloudflare Workers at `chittyprime.chitty.cc`
 **Stack:** Hono TypeScript, Zod
 **Canonical URI:** `chittycanon://core/services/chittyprime` | Tier 0
